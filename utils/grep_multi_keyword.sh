@@ -1,0 +1,1 @@
+more *err | grep -E 'name|mean fragment size is determined'
