@@ -1,19 +1,22 @@
+from cmath import log
+from operator import ge
 import pandas as pd
 import numpy as np
 from glbase3 import *
 import os, subprocess,sys
 from alive_progress import alive_bar
 
-os.chdir('/Users/jplab/Desktop/DAILY_CODE_DATA/2022-4/data/4-1_genelist_to_zscore_heatmap')
+os.chdir('/Users/jplab/Desktop/DAILY_CODE_DATA/2022-4/data/4-27_FOX_family_mRNA_shnc')
 config.draw_mode = "png"
 
 markers = {
-    'endosomal_enrty':['ACTR2','ACTR3','ARPC3','ARPC4','RAB7A','UVRAG','CCZ1B'],
-    'spike_cleavage_and_membrance_fusion':['ATP6AP1','ATP6AP2','ATP6V1A','ATP6V1B2','ATP6V0B','ATP6V0C','ATP6V1C1','ATP6V1E1','ATP6V0D1','ATP6V1G1','TMEM199','ATP6V1H','CTSL','TOR1AIP1'],
-    'endosome_recycling':['VPS26A','VPS29','VPS35','SNX27','PIK3C3','WDR81','ACP5','COMMD2','COMMD3','COMMD3-BMI1','COMMD4'],
-    'Translation':['SLTM','SPEN'],
-    'Golgi':['PPID','CHST14'],
-    'endoplasmic_reticulum':['DPM3','ERMP1']
+    # 'endosomal_enrty':['ACTR2','ACTR3','ARPC3','ARPC4','RAB7A','UVRAG','CCZ1B'],
+    # 'spike_cleavage_and_membrance_fusion':['ATP6AP1','ATP6AP2','ATP6V1A','ATP6V1B2','ATP6V0B','ATP6V0C','ATP6V1C1','ATP6V1E1','ATP6V0D1','ATP6V1G1','TMEM199','ATP6V1H','CTSL','TOR1AIP1'],
+    # 'endosome_recycling':['VPS26A','VPS29','VPS35','SNX27','PIK3C3','WDR81','ACP5','COMMD2','COMMD3','COMMD3-BMI1','COMMD4'],
+    # 'Translation':['SLTM','SPEN'],
+    # 'Golgi':['PPID','CHST14'],
+    # 'endoplasmic_reticulum':['DPM3','ERMP1']
+    'FOX family in mRNA_sh_nc_Data':{'FOXA1', 'FOXA2', 'FOXC1', 'FOXF1', 'FOXF2', 'FOXJ1', 'FOXJ2', 'FOXK2', 'FOXM1', 'FOXN1', 'FOXN3', 'FOXN4', 'FOXO1', 'FOXO3', 'FOXP1', 'FOXP2', 'FOXP3', 'FOXP4', 'FOXRED1', 'FOXRED2'}
 }
 
 num_terms = len(markers)
@@ -112,10 +115,14 @@ with alive_bar(num_terms) as bar:
                 # fold_change = True,
                 size=(16, 12), vert_space=0.8, #tree=tree,
                 title_fontsize=15, yticklabel_fontsize=15, xticklabel_fontsize=15)
+      
+        expn.drawBarChart(gene_symbols=gene_list, filename=expn_barplot+"%s.png" % 'genelist', key="name", bar_cols=colors_arrange,labels=None,size=(18, 15),vert_space=0.6)
 
         expn.coerce(int)
 
-        expn.row_Z()
+        # handle long list heatmap height issue
+        expn_length = len(expn)
+        print(expn_length)
 
         sample_name = marker_type
         title_sample_name = sample_name
@@ -123,10 +130,7 @@ with alive_bar(num_terms) as bar:
         if len(sample_name) > 50:
             title_sample_name = sample_name[0:25] + '-' + '\n' + sample_name[25:50] + '-' + '\n' + sample_name[50:]
             
-        # handle long list heatmap height issue
-        expn_length = len(expn)
-        print(expn_length)
-
+        
         fig_width = 15
         figsize=(fig_width, 25)
         heat_hei = 0.01 * expn_length
@@ -155,10 +159,35 @@ with alive_bar(num_terms) as bar:
             figsize=(fig_width, 200)
             grid=False 
 
-        heatmap_filename = './heatmap/'+sample_name+'_heatmap'
+        heatmap_filename1 = './heatmap/'+sample_name+'_heatmap.expression'
         create_folder_ifNotExists('./heatmap/')
         expn.heatmap(
-        filename=sample_name, 
+        filename=heatmap_filename1,
+        log=False,
+        # bracket = (0.0, 2000 ), 
+        heat_wid=0.25, 
+        # heat_wid=0.03*len(expn.getConditionNames()),
+        col_cluster=False, 
+        heat_hei=heat_hei, 
+        # heat_hei=0.008*len(expn),
+        colbar_label="Deseq2 normed expression: \n"+title_sample_name, 
+        row_cluster=True,
+        optimal_ordering = True,
+        figsize=figsize,
+        # highlights=highlights,
+        grid=grid
+        )
+
+
+
+        expn.row_Z()
+
+        
+
+        heatmap_filename2 = './heatmap/'+sample_name+'_heatmap'
+        create_folder_ifNotExists('./heatmap/')
+        expn.heatmap(
+        filename=heatmap_filename2, 
         # bracket = (-2.0, 2.0), 
         heat_wid=0.25, 
         # heat_wid=0.03*len(expn.getConditionNames()),
