@@ -4,6 +4,7 @@
 # like navieoverlap, if 2 regions's overlap > 0.5, keep the region.
 # !!! NOT the final common open region, becasue these region include both open but one condition is more enrich than other condition, these region will be removed in next step !
 
+##### part1: get the primary common open region
 if [ "$#" -eq 4 ]
     then
             # if [ -d $var1 ]
@@ -64,6 +65,7 @@ echo 'Primary Common Open region Done!!! Change the file name as needed !!!'
 echo 'This is NOT the final common open region !!! '
 echo 'Becasue these region include both open but one condition is more enrich than other condition, these region will be removed in next step'
 
+##### part2: get the final common open region
 # remove both open but in conditionA more enriched region
 bedtools intersect \
 -a ${sample_name1}_${sample_name2}_primary.common.open.bed \
