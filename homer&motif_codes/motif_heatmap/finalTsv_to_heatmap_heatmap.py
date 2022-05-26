@@ -10,8 +10,8 @@ from glbase3 import *
 import matplotlib.cm as cm
 config.draw_mode = "pdf"
 
-merged_motif_pvalue_path = '/Users/jplab/Desktop/DAILY_CODE_DATA/2022-4/data/4-13_ATAC_SHNC_motif_heatmap/merged_known_motifs_pvalue.tsv'
-save_to_path = '/Users/jplab/Desktop/DAILY_CODE_DATA/2022-4/data/4-13_ATAC_SHNC_motif_heatmap/'
+merged_motif_pvalue_path = '/Users/jplab/Desktop/DAILY_CODE_DATA/2022-5/data/5-25_profileheatmap_motifHeatmap/merged_known_motifs_pvalue.tsv'
+save_to_path = '/Users/jplab/Desktop/DAILY_CODE_DATA/2022-5/data/5-25_profileheatmap_motifHeatmap/'
 
 
 exp = expression(filename=merged_motif_pvalue_path,
@@ -48,13 +48,13 @@ draw_numbers_threshold_p200 = 200
 colbar_label = '-log10(pvalue)' + '\n' + '* indicates p < 1e-' + str(draw_numbers_threshold_p20) + '\n' + '\n' \
                 'MOTIFS with P-value > 0.01 and ' + '\n' + 'target/background <1.5 and ' + '\n' + 'target < = 2% '+ '\n' +'will give them -log10(pvalue) to 0'
 
-exp_not_sogood.heatmap(filename=save_to_path+'all_merge_motif_pvalue_heatmap', row_label_key='motif', 
-            bracket=[-10,380],
-            cmap=cm.Reds, row_cluster=True, col_cluster=False, col_font_size=8,
-            draw_numbers=True, draw_numbers_fmt='*', draw_numbers_threshold=draw_numbers_threshold_p001, grid=True,
-            heat_wid=0.03*len(exp_not_sogood.getConditionNames()), heat_hei=0.002*len(exp_not_sogood), row_font_size=4,figsize=(9,20),
-            colbar_label=colbar_label
-            )
+# exp_not_sogood.heatmap(filename=save_to_path+'all_merge_motif_pvalue_heatmap', row_label_key='motif', 
+#             bracket=[-10,380],
+#             cmap=cm.Reds, row_cluster=True, col_cluster=False, col_font_size=8,
+#             draw_numbers=True, draw_numbers_fmt='*', draw_numbers_threshold=draw_numbers_threshold_p001, grid=True,
+#             heat_wid=0.03*len(exp_not_sogood.getConditionNames()), heat_hei=0.002*len(exp_not_sogood), row_font_size=4,figsize=(9,20),
+#             colbar_label=colbar_label
+#             )
 
 # good motif
 exp.heatmap(filename=save_to_path+'all_merge_motif_pvalue_good_heatmap', row_label_key='motif', 
