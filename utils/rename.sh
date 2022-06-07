@@ -1,3 +1,4 @@
+# v for vobose
 rename -v fq.gz fastq.gz /Data/RAW_DATA/CUT_TAG_2021-06-02/Rawdata/*/FOXA1*fq.gz
 
 rename -v fq.gz fastq.gz /Data/RAW_DATA/CUT_TAG_2021-06-02/Rawdata/*/H3K27*fq.gz
