@@ -6,6 +6,7 @@ annotatePeaks.pl  /Users/jplab/Desktop/hogwarts_atac_codes/redefined/clus/cid_1.
     -m /Users/jplab/Desktop/hogwarts_atac_codes/downtream/anno_homer/interested_motif/FOXM1.motif > B14_open_foxm1_anno_expr.tsv 
 
 # no expr data
+# with motif file to show binding sequence is or not in peak region
 annotatePeaks.pl /Users/jplab/Desktop/2022-2/data/2-16_CSAW/FOXA1_BDT_up_B14ATAC_H3K27acB14.bed \
     hg38 \
     -m /Users/jplab/Desktop/hogwarts_atac_codes/downtream/anno_homer/interested_motif/FOXM1.motif /Users/jplab/Downloads/FOXA1.jaspar /Users/jplab/Downloads/CTCF.jaspar \
