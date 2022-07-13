@@ -1,94 +1,165 @@
-# ATACorrect for all 3 conditions
+################################################################################
+# NOTE:
+# ATACorrect --peaks
+# ScoreBigwig --regions
+# BINDetect --peaks
+# For all three tools, should use merged peaks for normalization is equal
+################################################################################
+
+# ATACorrect for all 6 conditions
 ncB14_naiveoverlap_bam=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/noDUP_nochrM_bam/NC-B.merged.noDup.nochrM.sortpos.bam
 ncDMSO_naiveoverlap_bam=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/noDUP_nochrM_bam/NC-D.merged.noDup.nochrM.sortpos.bam
 ncTGF_naiveoverlap_bam=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/noDUP_nochrM_bam/NC-T.merged.noDup.nochrM.sortpos.bam
 
-# merge B D T 3 conditions peak file
-# merge H3K27ac B14 DMSO, but not TGF(use TGF rep2, rep1 is bad enriched) peak for deeptools computematrix
-cat /Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/MACS_allLen_noDUP_noChrM/naiveOverlap_q001/NC_B_overlap_peaks.narrowPeak \
- /Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/MACS_allLen_noDUP_noChrM/naiveOverlap_q001/NC_D_overlap_peaks.narrowPeak \
- /Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/MACS_allLen_noDUP_noChrM/naiveOverlap_q001/NC_T_overlap_peaks.narrowPeak \
- | sort -k1,1 -k2,2n | mergeBed -i stdin -o collapse -c 4 > ncB14.DMSO.TGF.navieoverlap.merged.bed &
+shB14_naiveoverlap_bam=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/noDUP_nochrM_bam/F-B.merged.noDup.nochrM.sortpos.bam
+shDMSO_naiveoverlap_bam=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/noDUP_nochrM_bam/F-D.merged.noDup.nochrM.sortpos.bam
+shTGF_naiveoverlap_bam=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/noDUP_nochrM_bam/F-T.merged.noDup.nochrM.sortpos.bam
 
-merged_bed=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/TOBIAS/ncB14.DMSO.TGF.navieoverlap.merged.bed
+# remember to use merged peak for normalization
+merged_peaks_ncshFOXA1BDT_6_conditions=/Data/Projects/ATAC_seq_shFOXA1_20220302_snakepipes/MACS_allLen_noDUP_noChrM/naiveOverlap_q001/ncFOXA1.shFOXA1.B14.DMSO.TGF.navieoverlap001.bed
 
 hg38_path=/Data/Ref_genome_anno/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna
 blacklist_path=/Data/Ref_genome_anno/ENCODE_BLACK_LIST_REGION/hg38-blacklist.v2.bed
 
 motif_jaspar=/Data/Ref_genome_anno/motif_database/Vertebrates_singlebatch_motifs.jaspar
+# motif_homocomo=/Data/Ref_genome_anno/motif_database/meme_motif_databases/HUMAN/HOCOMOCOv11_HUMAN.meme
+
+
+motif_jaspar=/Data/Ref_genome_anno/motif_database/Vertebrates_singlebatch_motifs.jaspar
 motif_homocomo=/Data/Ref_genome_anno/motif_database/meme_motif_databases/HUMAN/HOCOMOCOv11_HUMAN.meme
 
-# for B14
+####################################
+# ATACorrect
+####################################
+
+# ncFOXA1
 TOBIAS ATACorrect \
     --bam $ncB14_naiveoverlap_bam \
     --genome $hg38_path \
-    --peaks $merged_bed \
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
     --blacklist $blacklist_path \
     --outdir ./atacorrect \
-    --cores 20 \
-&> B14_bias_corr_6_10.log &
+    --cores 10 \
+&> B14_bias_corr_july_11.log &
 
 TOBIAS ATACorrect \
     --bam $ncDMSO_naiveoverlap_bam \
     --genome $hg38_path \
-    --peaks $merged_bed \
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
     --blacklist $blacklist_path \
     --outdir ./atacorrect \
-    --cores 20 \
-&> DMSO_bias_corr_6_10.log &
+    --cores 10 \
+&> DMSO_bias_corr_july_11.log &
 
 TOBIAS ATACorrect \
     --bam $ncTGF_naiveoverlap_bam \
     --genome $hg38_path \
-    --peaks $merged_bed \
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
     --blacklist $blacklist_path \
     --outdir ./atacorrect \
-    --cores 20 \
-&> TGF_bias_corr_6_10.log &
+    --cores 10 \
+&> TGF_bias_corr_july_11.log &
+
+# shFOXA1
+TOBIAS ATACorrect \
+    --bam $shB14_naiveoverlap_bam \
+    --genome $hg38_path \
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --blacklist $blacklist_path \
+    --outdir ./atacorrect \
+    --cores 10 \
+&> shFOXA1.B14_bias_corr_july_11.log &
+
+TOBIAS ATACorrect \
+    --bam $shDMSO_naiveoverlap_bam \
+    --genome $hg38_path \
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --blacklist $blacklist_path \
+    --outdir ./atacorrect \
+    --cores 10 \
+&> shFOXA1.DMSO_bias_corr_july_11.log &
+
+TOBIAS ATACorrect \
+    --bam $shTGF_naiveoverlap_bam \
+    --genome $hg38_path \
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --blacklist $blacklist_path \
+    --outdir ./atacorrect \
+    --cores 10 \
+&>  shFOXA1.TGF_bias_corr_july_11.log &
 
 
+####################################
+# ScoreBigwig
+####################################
 
 # scorebigwig
-# for B14 
 TOBIAS ScoreBigwig \
     --signal ./atacorrect/NC-B.merged.noDup.nochrM.sortpos_corrected.bw \
-    --regions $merged_bed \
+    --regions $merged_peaks_ncshFOXA1BDT_6_conditions \
     --output ncB14_naiveoverlap_footprint.bw \
-    --cores 20 \
-&> ncB14_scorebigwig_6_10.log &
+    --cores 10 \
+&> ncB14_scorebigwig_July_11.log &
 
 TOBIAS ScoreBigwig \
     --signal ./atacorrect/NC-D.merged.noDup.nochrM.sortpos_corrected.bw \
-    --regions $merged_bed \
+    --regions $merged_peaks_ncshFOXA1BDT_6_conditions \
     --output ncDMSO_naiveoverlap_footprint.bw \
-    --cores 20 \
-&> ncDMSO_scorebigwig_6_10.log &
+    --cores 10 \
+&> ncDMSO_scorebigwig_July_11.log &
 
 TOBIAS ScoreBigwig \
     --signal ./atacorrect/NC-T.merged.noDup.nochrM.sortpos_corrected.bw \
-    --regions $merged_bed \
+    --regions $merged_peaks_ncshFOXA1BDT_6_conditions \
     --output ncTGF_naiveoverlap_footprint.bw \
-    --cores 20 \
-&> ncTGF_scorebigwig_6_10.log &
+    --cores 10 \
+&> ncTGF_scorebigwig_July_11.log &
 
 
+TOBIAS ScoreBigwig \
+    --signal ./atacorrect/F-B.merged.noDup.nochrM.sortpos_bias.bw \
+    --regions $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --output shB14_naiveoverlap_footprint.bw \
+    --cores 10 \
+&> ncB14_scorebigwig_July_11.log &
+
+TOBIAS ScoreBigwig \
+    --signal ./atacorrect/F-D.merged.noDup.nochrM.sortpos_bias.bw \
+    --regions $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --output shDMSO_naiveoverlap_footprint.bw \
+    --cores 10 \
+&> ncDMSO_scorebigwig_July_11.log &
+
+TOBIAS ScoreBigwig \
+    --signal ./atacorrect/F-T.merged.noDup.nochrM.sortpos_bias.bw \
+    --regions $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --output shTGF_naiveoverlap_footprint.bw \
+    --cores 10 \
+&> ncTGF_scorebigwig_July_11.log &
+
+
+####################################
+# BINDetect
 # need to remove KI or GI from peak file!!! or will throw error and stop running
-# Bindetect
-# B14 vs TGFb MEME database
+####################################
 TOBIAS BINDetect \
     --motifs $motif_jaspar \
     --signals \
         ./scorebigwig/ncB14_naiveoverlap_footprint.bw \
         ./scorebigwig/ncDMSO_naiveoverlap_footprint.bw \
         ./scorebigwig/ncTGF_naiveoverlap_footprint.bw \
+        ./scorebigwig/shB14_naiveoverlap_footprint.bw \
+        ./scorebigwig/shDMSO_naiveoverlap_footprint.bw \
+        ./scorebigwig/shTGF_naiveoverlap_footprint.bw \
     --genome $hg38_path \
-    --peaks $merged_bed \
-    --outdir ./bindetect \
-    --cond_names ncB14 ncDMSO ncTGF \
-    --cores 20 \
-&> bindetect_meme_6-6.log &
+    --peaks $merged_peaks_ncshFOXA1BDT_6_conditions \
+    --outdir ./bindetect_shANDnc \
+    --cond_names ncB14 ncDMSO ncTGF shB14 shDMSO shTGF \
+    --cores 40 \
+&> bindetect_meme_July-11.log &
 
 #########################################################################################################
+# PlotAggregate
 # attention: do not use region.bed to constrain PlotAggregate, this will cause weaker signal of footprints
 # if use, need to think carefully
 # or choose *_all.bed to get stronger footprint
